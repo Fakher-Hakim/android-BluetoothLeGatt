@@ -141,6 +141,20 @@ public class DeviceControlActivity extends Activity {
                             mBluetoothLeService.setCharacteristicNotification(
                                     characteristic, true);
                         }
+                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_INDICATE) > 0) {
+                            mNotifyCharacteristic = characteristic;
+                            mBluetoothLeService.setCharacteristicIndication(
+                                    characteristic, true);
+                        }
+                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
+                            byte[] value = "Your value".getBytes();
+                            if (mNotifyCharacteristic != null) {
+                                mBluetoothLeService.setCharacteristicNotification(
+                                        mNotifyCharacteristic, false);
+                                mNotifyCharacteristic = null;
+                            }
+                            mBluetoothLeService.writeCharacteristic(characteristic,value);
+                        }
                         return true;
                     }
                     return false;
